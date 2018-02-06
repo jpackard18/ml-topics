@@ -2,9 +2,9 @@ from PyQt5.QtMultimedia import QMediaRecorder, QCamera, QCameraInfo, QCameraView
 import PyQt5.QtMultimedia as QtMultimedia
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
 from PyQt5.QtCore import QUrl, QObject
-
 import os
 import time
+
 
 class Camera(QObject):
     def __init__(self, parent=QObject()):
@@ -16,7 +16,7 @@ class Camera(QObject):
         self.camvfindset = QCameraViewfinderSettings()
         self.recorder = QMediaRecorder(self.cam)
 
-    def iniCamera(self):
+    def init_camera(self):
         cameras = QCameraInfo.availableCameras()
         for cameraInfo in cameras:
             # select the capturing device if it is available
@@ -29,7 +29,7 @@ class Camera(QObject):
         if self.cam.isCaptureModeSupported(QCamera.CaptureVideo):
             print("Capturemode supported")
 
-    def startVid(self):
+    def start_vid(self):
         self.cam.load()
         # self.camvfind.show()
         self.cam.setViewfinder(self.camvfind)
@@ -50,15 +50,15 @@ class Camera(QObject):
 
         print("Output Loc: " + str(self.recorder.outputLocation()))
 
-    def startRecording(self):
+    def start_recording(self):
         directory = os.path.abspath(str(os.getcwd()))
         filename = "test" + str(time.time()) + ".mp4"
         abs_path = os.path.join(directory, filename)
         self.recorder.setOutputLocation(QUrl(abs_path))
         self.recorder.record()
 
-    def stopRecording(self):
+    def stop_recording(self):
         self.recorder.stop()
 
-    def getViewFinder(self):
+    def get_viewfinder(self):
         return self.camvfind
