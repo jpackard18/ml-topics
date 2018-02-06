@@ -16,6 +16,8 @@ class VideoWindow(QMainWindow):
     def __init__(self, camera, parent=None):
         super(VideoWindow, self).__init__(parent)
         self.camera = camera
+        self.camera.iniCamera()
+    	self.camera.startVid()
         # quit on alt+f4 or ctrl+w
         self.shortcut = QShortcut(QKeySequence.Close, self)
         self.shortcut.activated.connect(self.onQuit)
