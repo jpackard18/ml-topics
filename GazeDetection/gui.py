@@ -21,7 +21,7 @@ class VideoWindow(QMainWindow):
         self.camera.start_vid()
         # quit on alt+f4 or ctrl+w
         self.shortcut = QShortcut(QKeySequence.Close, self)
-        self.shortcut.activated.connect(self.onQuit)
+        self.shortcut.activated.connect(self.on_quit)
         # Create a widget for window contents
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -29,6 +29,6 @@ class VideoWindow(QMainWindow):
         # create the main layout that contains the viewfinder and controls
         main_layout = QVBoxLayout()
         # mainLayout.addLayout(self.infoDisplay) # add the top status bar
-        main_layout.addWidget(self.camera.getViewFinder())
+        main_layout.addWidget(self.camera.camvfind)
         # apply the main layout
         central_widget.setLayout(main_layout)

@@ -1,7 +1,7 @@
 import sys
 import PyQt5.QtGui
-from .camera import *
-from .gui import *
+from GazeDetection.camera import *
+from GazeDetection.gui import *
 
 
 if __name__ == '__main__':

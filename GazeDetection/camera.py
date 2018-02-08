@@ -59,6 +59,3 @@ class Camera(QObject):
 
     def stop_recording(self):
         self.recorder.stop()
-
-    def get_viewfinder(self):
-        return self.camvfind
