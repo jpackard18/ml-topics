@@ -1,15 +1,13 @@
 import sys
 import PyQt5.QtGui
-from GazeDetection.camera import *
-from GazeDetection.gui import *
+from gui import *
 
 
 if __name__ == '__main__':
 
     app = PyQt5.QtWidgets.QApplication(sys.argv)
-    camera = Camera()
     
-    window = VideoWindow(camera)
+    window = VideoWindow()
     window.resize(1000, 600)
     window.show()
     
