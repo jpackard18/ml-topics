@@ -49,10 +49,7 @@ class Camera(QObject):
         t.join()
         
     def capture_still(self):
-        self.cam.start()
-        self.cam.searchAndLock()
         self.imageCapture.capture()
-        self.cam.unlock()
 
     def setOnCapture(self, callback=None):
         self.imageCapture.imageCaptured.connect(callback)

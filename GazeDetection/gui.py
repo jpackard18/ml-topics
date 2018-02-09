@@ -46,12 +46,14 @@ class VideoWindow(QMainWindow):
         central_widget.setLayout(main_layout)
 
         #automatically capture stills
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.capture_still)
-        self.timer.start(83)
+        #self.timer = QTimer()
+        #self.timer.timeout.connect(self.capture_still)
+        #self.timer.start(200)
 
     def capture_still(self):
+        self.cam.searchAndLock()
         self.camera.capture_still()
+        self.cam.unlock()
 
     def on_capture_still(self, id, img):
         self.displayQImageInCv(img)
