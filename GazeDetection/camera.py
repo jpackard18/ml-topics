@@ -11,31 +11,6 @@ import os
 import time
 from threading import Thread
 
-def convertQImageToMat(qImage):
-    '''  Converts a QImage into an opencv MAT format  '''
-    
-    qImage = qImage.convertToFormat(4)
-    
-    width = qImage.width()
-    height = qImage.height()
-    
-    ptr = qImage.bits()
-    ptr.setsize(qImage.byteCount())
-    arr = np.array(ptr).reshape(height, width, 4)  #  Copies the data
-    return arr
-
-def convertMatToQImage(cv_mat):
-    height, width, channel = cv_mat.shape
-    bytesPerLine = 3 * width
-    qImg = QImage(cv_mat.data, width, height, bytesPerLine, QImage.Format_RGB888)
-
-def displayQImageInCv(qImage):
-    startTime = time.time()
-    cv_img = convertQImageToMat(qImage)
-    qImage = convertMatToQImage(cv_img)
-    print(time.time() - startTime)
-
-
 class Camera(QObject):
     def __init__(self, parent=QObject()):
         super(Camera, self).__init__(parent)
@@ -66,20 +41,22 @@ class Camera(QObject):
         
         self.imageCapture = QCameraImageCapture(self.cam)
         self.imageCapture.setCaptureDestination(QCameraImageCapture.CaptureToBuffer)
-        self.imageCapture.imageCaptured.connect(self.on_capture_still)
-        self.capture_still()
 
     def on_capture_still(self, id, img):
         print(img)
         t = Thread(target=displayQImageInCv, args=(img,))
         t.start()
         t.join()
+        
     def capture_still(self):
         self.cam.start()
         self.cam.searchAndLock()
         self.imageCapture.capture()
         self.cam.unlock()
 
+    def setOnCapture(self, callback=None):
+        self.imageCapture.imageCaptured.connect(callback)
+        
     def start_vid(self):
         self.cam.load()
         # self.camvfind.show()
