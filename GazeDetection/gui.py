@@ -1,31 +1,50 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, QThread
 import cv2
 
 from camera import *
 from CVEyeIsolation.EyeDetection import detectEyes
 
-class ConfigurationWindow(QMainWindow):
+class EyeDetectionWorker(QThread):
 
-    def __init__(self):
-        super(ConfigurationWindow, self).__init__()
+    def __init__(self, cap, imageLabelDisplay):
+        QThread.__init__(self)
+        self.cap = cap
+        self.imageLabelDisplay = imageLabelDisplay
+        self.stopped = False
+
+    def stopp(self):
+        self.stopped = True
+
+    #grabs an image and processes it
+    def run(self):
+        while(True and not self.stopped):
+            startTime = time.time()
+            ret, frame = self.cap.read()
+            result_img, eyes = detectEyes(frame)
+            print(eyes)
+            qImage = VideoWindow.convertMatToQImage(result_img)
+            self.imageLabelDisplay.setPixmap(QPixmap.fromImage(qImage))
+            self.imageLabelDisplay.show()
+            timeDelta = time.time() - startTime
+            print("Time taken for eye detection: " + str(timeDelta))
+        self.quit()
 
 
 class VideoWindow(QMainWindow):
 
-    def on_quit(self):
+    def closeEvent(self, event):
+        self.worker.stopp()
+        self.cap.release()
         self.close()
 
     def __init__(self, parent=None):
-
         super(VideoWindow, self).__init__(parent)
-        self.camera = Camera()
-        self.camera.init_camera()
-        self.camera.setOnCapture(callback=self.on_capture_still)
+        self.cap = cv2.VideoCapture(0)
         # quit on alt+f4 or ctrl+w
         self.shortcut = QShortcut(QKeySequence.Close, self)
-        self.shortcut.activated.connect(self.on_quit)
+        self.shortcut.activated.connect(self.closeEvent)
         # Create a widget for window contents
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -35,39 +54,14 @@ class VideoWindow(QMainWindow):
         hor_layout = QHBoxLayout()
         #add a capture button
         self.imageLabel = QLabel()
-        self.cap_button = QPushButton()
-        self.cap_button.clicked.connect(self.capture_still)
-        self.cap_button.setText("Capture Still")
-        hor_layout.addWidget(self.camera.camvfind)
         hor_layout.addWidget(self.imageLabel)
         main_layout.addLayout(hor_layout)
-        main_layout.addWidget(self.cap_button)
         # apply the main layout
         central_widget.setLayout(main_layout)
 
         #automatically capture stills
-        #self.timer = QTimer()
-        #self.timer.timeout.connect(self.capture_still)
-        #self.timer.start(200)
-
-    def capture_still(self):
-        self.cam.searchAndLock()
-        self.camera.capture_still()
-        self.cam.unlock()
-
-    def on_capture_still(self, id, img):
-        self.displayQImageInCv(img)
-
-    def displayQImageInCv(self, qImage):
-        startTime = time.time()
-        cv_img = VideoWindow.convertQImageToMat(qImage)
-        cv_img, eyes = detectEyes(cv_img)
-        print(eyes)
-        qImage = VideoWindow.convertMatToQImage(cv_img)
-        self.imageLabel.setPixmap(QPixmap.fromImage(qImage))
-        self.imageLabel.show()
-        timeDelta = time.time() - startTime
-        print("Time taken for eye detection: " + str(timeDelta))
+        self.worker = EyeDetectionWorker(self.cap, self.imageLabel)
+        self.worker.start()
 
     @staticmethod
     def convertQImageToMat(qImage):
