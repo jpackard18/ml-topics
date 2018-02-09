@@ -1,5 +1,6 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QTimer
 import cv2
 
 from camera import *
@@ -31,42 +32,45 @@ class VideoWindow(QMainWindow):
         # create the top status display row
         # create the main layout that contains the viewfinder and controls
         main_layout = QVBoxLayout()
-        # mainLayout.addLayout(self.infoDisplay) # add the top status bar
-        main_layout.addWidget(self.camera.camvfind)
+        hor_layout = QHBoxLayout()
         #add a capture button
         self.imageLabel = QLabel()
         self.cap_button = QPushButton()
         self.cap_button.clicked.connect(self.capture_still)
         self.cap_button.setText("Capture Still")
-        main_layout.addWidget(self.imageLabel)
+        hor_layout.addWidget(self.camera.camvfind)
+        hor_layout.addWidget(self.imageLabel)
+        main_layout.addLayout(hor_layout)
         main_layout.addWidget(self.cap_button)
         # apply the main layout
         central_widget.setLayout(main_layout)
+
+        #automatically capture stills
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.capture_still)
+        self.timer.start(83)
 
     def capture_still(self):
         self.camera.capture_still()
 
     def on_capture_still(self, id, img):
-        print(img.byteCount())
-        print(id)
         self.displayQImageInCv(img)
 
     def displayQImageInCv(self, qImage):
         startTime = time.time()
         cv_img = VideoWindow.convertQImageToMat(qImage)
-        cv_img = detectEyes(cv_img)
+        cv_img, eyes = detectEyes(cv_img)
+        print(eyes)
         qImage = VideoWindow.convertMatToQImage(cv_img)
-        print(qImage)
         self.imageLabel.setPixmap(QPixmap.fromImage(qImage))
         self.imageLabel.show()
-        print(time.time() - startTime)
+        timeDelta = time.time() - startTime
+        print("Time taken for eye detection: " + str(timeDelta))
 
     @staticmethod
     def convertQImageToMat(qImage):
         '''  Converts a QImage into an opencv MAT format  '''
-        
         qImage = qImage.convertToFormat(4)
-        
         width = qImage.width()
         height = qImage.height()
         
