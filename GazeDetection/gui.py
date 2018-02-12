@@ -2,9 +2,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import QTimer, QThread
 import cv2
+import time
 
 from camera import *
-from CVEyeIsolation.EyeDetection import detectEyes
+from CVEyeIsolation.EyeDetection import detect_eyes
+
 
 class EyeDetectionWorker(QThread):
 
@@ -14,28 +16,28 @@ class EyeDetectionWorker(QThread):
         self.imageLabelDisplay = imageLabelDisplay
         self.stopped = False
 
-    def stopp(self):
+    def stop(self):
         self.stopped = True
 
-    #grabs an image and processes it
+    # grabs an image and processes it
     def run(self):
-        while(True and not self.stopped):
-            startTime = time.time()
+        while not self.stopped:
+            start_time = time.time()
             ret, frame = self.cap.read()
-            result_img, eyes = detectEyes(frame)
+            result_img, eyes = detect_eyes(frame)
             print(eyes)
             qImage = VideoWindow.convertMatToQImage(result_img)
             self.imageLabelDisplay.setPixmap(QPixmap.fromImage(qImage))
             self.imageLabelDisplay.show()
-            timeDelta = time.time() - startTime
-            print("Time taken for eye detection: " + str(timeDelta))
+            time_delta = time.time() - start_time
+            print("Time taken for eye detection: " + str(time_delta))
         self.quit()
 
 
 class VideoWindow(QMainWindow):
 
     def closeEvent(self, event):
-        self.worker.stopp()
+        self.worker.stop()
         self.cap.release()
         self.close()
 
