@@ -24,11 +24,11 @@ def detect_eyes(img):
         print('face')
         # cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
         roi_gray = gray[y:y + h, x:x + w]
-        roi_color = img[y:y + h, x:x + w]
+        # roi_color = img[y:y + h, x:x + w]
         eyes = eye_cascade.detectMultiScale(roi_gray, 1.3, 4)
         for (ex, ey, ew, eh) in eyes[:MAX_EYES_PER_FACE]:
             eyes_rect.append(Eye(ex + x, ey + y, ew, eh))
-            cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
+            # cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
     return img, eyes_rect
 
 
@@ -44,10 +44,14 @@ def grab_eyes(img):
         y = eye_rect.y
         w = eye_rect.width
         h = eye_rect.height
-        print("%d %d %d %d"%(x,y,w,h))
+        # print("%d %d %d %d"%(x,y,w,h))
         eyes.append(img[y:y+h, x:x+w])
     cv2.imshow("Example", eyes[0])
+    cv2.imshow("Example 2", eyes[1])
     cv2.waitKey(0)
+    return eyes
 
+
+# img = cv2.imread("images/0001_2m_-15P_-10V_-5H.jpg")
 img = cv2.imread("images/0004_2m_-15P_-10V_-5H.jpg")
 grab_eyes(img)
