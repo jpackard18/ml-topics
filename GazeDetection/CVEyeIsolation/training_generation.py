@@ -6,7 +6,7 @@ from pickleFunctions import save_training_data
 
 
 # Full path of the photo set
-TRAINING_DATA_PATH = "/Users/jamespackard/Downloads/Columbia Gaze Data Set"
+TRAINING_DATA_PATH = "../../../a"
 
 
 def create_training_data(gaze_set_path):
