@@ -1,7 +1,13 @@
 import cv2
+from os.path import realpath, dirname, join
 
-face_cascade = cv2.CascadeClassifier('cascades/haarcascade_frontalface_default.xml')
-eye_cascade = cv2.CascadeClassifier('cascades/haarcascade_eye.xml')
+
+CASCADES_FOLDER = join(dirname(realpath(__file__)), 'cascades')
+print(CASCADES_FOLDER)
+face_cascade = cv2.CascadeClassifier(join(CASCADES_FOLDER,
+                                          'haarcascade_frontalface_default.xml'))
+eye_cascade = cv2.CascadeClassifier(join(CASCADES_FOLDER,
+                                         'haarcascade_eye.xml'))
 
 MAX_FACES = 2
 MAX_EYES_PER_FACE = 2

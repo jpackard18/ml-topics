@@ -1,11 +1,11 @@
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QTimer, QThread
+from PyQt5.QtCore import QThread
+import numpy as np
 import cv2
-import time
 
-from camera import *
-from CVEyeIsolation.EyeDetection import detect_eyes
+from .camera import *
+from .EyeDetection import detect_eyes
 
 
 class EyeDetectionWorker(QThread):
@@ -37,6 +37,9 @@ class EyeDetectionWorker(QThread):
 class VideoWindow(QMainWindow):
 
     def closeEvent(self, event):
+        self.onCloseWindow()
+
+    def onCloseWindow(self):
         self.worker.stop()
         self.cap.release()
         self.close()
@@ -46,7 +49,7 @@ class VideoWindow(QMainWindow):
         self.cap = cv2.VideoCapture(0)
         # quit on alt+f4 or ctrl+w
         self.shortcut = QShortcut(QKeySequence.Close, self)
-        self.shortcut.activated.connect(self.closeEvent)
+        self.shortcut.activated.connect(self.onCloseWindow)
         # Create a widget for window contents
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)

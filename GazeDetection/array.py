@@ -1,7 +1,9 @@
 import numpy as np
 
+
 def linearize(numpyArray):
     return np.ravel(numpyArray)
+
 
 def vectorized_result(v, h):
     e = np.zeros((2,1))

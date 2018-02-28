@@ -1,12 +1,8 @@
 import os
 import cv2
-from EyeDetection import grab_eyes
+from GazeDetection.EyeDetection import grab_eyes
 from GazeDetection.array import linearize, vectorized_result
-from pickleFunctions import save_training_data
-
-
-# Full path of the photo set
-TRAINING_DATA_PATH = "../../../a"
+from GazeDetection.pickleFunctions import save_training_data
 
 
 def create_training_data(gaze_set_path):
@@ -38,6 +34,3 @@ def create_training_data(gaze_set_path):
     save_training_data(training_data)
     print("Success Rate: {}%".format(num_success / num_photos * 100))
     print("Complete")
-
-
-create_training_data(TRAINING_DATA_PATH)

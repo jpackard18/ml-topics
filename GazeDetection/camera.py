@@ -2,14 +2,9 @@ from PyQt5.QtMultimedia import QMediaRecorder, QCamera, QCameraInfo, QCameraView
 import PyQt5.QtMultimedia as QtMultimedia
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
 from PyQt5.QtCore import QUrl, QObject
-from PyQt5.QtGui import QImage
-#cv imports
-import cv2
-import numpy as np
-
 import os
 import time
-from threading import Thread
+
 
 class Camera(QObject):
     def __init__(self, parent=QObject()):
@@ -26,7 +21,7 @@ class Camera(QObject):
         cameras = QCameraInfo.availableCameras()
         for cameraInfo in cameras:
             # select the capturing device if it is available
-            if (cameraInfo.description().find("Capture") is not -1):
+            if cameraInfo.description().find("Capture") is not -1:
                 self.cam = QCamera(cameraInfo)
                 self.caminfo = QCameraInfo(self.cam)
                 self.recorder = QMediaRecorder(self.cam)
@@ -41,12 +36,6 @@ class Camera(QObject):
         
         self.imageCapture = QCameraImageCapture(self.cam)
         self.imageCapture.setCaptureDestination(QCameraImageCapture.CaptureToBuffer)
-
-    def on_capture_still(self, id, img):
-        print(img)
-        t = Thread(target=displayQImageInCv, args=(img,))
-        t.start()
-        t.join()
         
     def capture_still(self):
         self.imageCapture.capture()
