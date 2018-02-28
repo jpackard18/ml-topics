@@ -51,5 +51,6 @@ def grab_eyes(img):
 
 
 # img = cv2.imread("images/0001_2m_-15P_-10V_-5H.jpg")
-img = cv2.imread("images/0004_2m_-15P_-10V_-5H.jpg")
-grab_eyes(img)
+if __name__ == "__main__":
+    img = cv2.imread("images/0004_2m_-15P_-10V_-5H.jpg")
+    grab_eyes(img)
