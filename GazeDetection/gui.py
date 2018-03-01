@@ -24,7 +24,7 @@ class EyeDetectionWorker(QThread):
         while not self.stopped:
             start_time = time.time()
             ret, frame = self.cap.read()
-            result_img, eyes = detect_eyes(frame)
+            result_img, eyes = detect_eyes(frame, draw_rects=True)
             print(eyes)
             qImage = VideoWindow.convertMatToQImage(result_img)
             self.imageLabelDisplay.setPixmap(QPixmap.fromImage(qImage))
