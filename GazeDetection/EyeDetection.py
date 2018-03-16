@@ -3,7 +3,6 @@ from os.path import realpath, dirname, join
 
 
 CASCADES_FOLDER = join(dirname(realpath(__file__)), 'cascades')
-print(CASCADES_FOLDER)
 face_cascade = cv2.CascadeClassifier(join(CASCADES_FOLDER,
                                           'haarcascade_frontalface_default.xml'))
 eye_cascade = cv2.CascadeClassifier(join(CASCADES_FOLDER,
@@ -27,15 +26,15 @@ def detect_eyes(img, draw_rects=False):
     faces = face_cascade.detectMultiScale(gray, 1.2, 5)
     eyes_rect = []
     for (x, y, w, h) in faces[:MAX_FACES]:
-        if(draw_rects):
+        if draw_rects:
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
         roi_gray = gray[y:y + h, x:x + w]
-        if (draw_rects):
+        if draw_rects:
             roi_color = img[y:y + h, x:x + w]
         eyes = eye_cascade.detectMultiScale(roi_gray, 1.3, 4)
         for (ex, ey, ew, eh) in eyes[:MAX_EYES_PER_FACE]:
             eyes_rect.append(Eye(ex + x, ey + y, ew, eh))
-            if(draw_rects):
+            if draw_rects:
                 cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
     return img, eyes_rect
 
@@ -52,7 +51,7 @@ def grab_eyes(img):
         w = eye_rect.width
         h = eye_rect.height
         # print("%d %d %d %d"%(x,y,w,h))
-        eyes.append(img[y:y+h, x:x+w])
+        eyes.append(cv2.resize(img[y:y+h, x:x+w], (32, 32)))
     # cv2.imshow("Example", eyes[0])
     # cv2.imshow("Example 2", eyes[1])
     # cv2.waitKey(0)
