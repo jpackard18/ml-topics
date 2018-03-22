@@ -20,7 +20,12 @@ for i in range(len_training_data):
         print("\rProgress: {}%".format(percent_complete), end='')
     item = training_data[i]
     # Input
-    pixels = np.array([round(pixel / 255.0, 3) for pixel in item[0]])
+    things = []
+    for j in range(0,6143,3):
+        things[j] = item[j] + item[j+1] + item[j+2]
+
+    pixels = np.array([round(pixel / (255.0* 3), 3) for pixel in things[0]])
+
     # Output
     out = item[1]
     vm = np.zeros((14, 1))
