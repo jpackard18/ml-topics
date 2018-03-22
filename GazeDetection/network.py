@@ -12,6 +12,7 @@ and omits many desirable features.
 #### Libraries
 # Standard library
 import random
+import pickleFunctions
 
 # Third-party libraries
 import numpy as np
@@ -146,4 +147,8 @@ def sigmoid_prime(z):
 
 
 if __name__ == "__main__":
-    net = Network([2048, 260, 5])
+    net = Network([2048, 260, 2])
+    training_data = pickleFunctions.load_training_data('../full_training_converted_2.pkl')
+    # test_data = pickleFunctions.load_training_data('../next_50.pkl')
+    # net.SGD(training_data, 30, 10, 3.0, test_data=test_data)
+    net.SGD(training_data, 30, 10, 3.0)
