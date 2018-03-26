@@ -116,6 +116,8 @@ class Network(object):
             sp = sigmoid_prime(z)
             delta = np.dot(self.weights[-l+1].transpose(), delta) * sp
             nabla_b[-l] = delta
+            print(delta)
+            print(activations[-l-1].transpose())
             nabla_w[-l] = np.dot(delta, activations[-l-1].transpose())
         return nabla_b, nabla_w
 
@@ -147,8 +149,8 @@ def sigmoid_prime(z):
 
 
 if __name__ == "__main__":
-    net = Network([2048, 260, 2])
-    training_data = pickleFunctions.load_training_data('../full_training_converted_2.pkl')
+    net = Network([2048, 3, 14])
+    training_data = pickleFunctions.load_training_data('../full_training_converted_3.pkl')
     # test_data = pickleFunctions.load_training_data('../next_50.pkl')
     # net.SGD(training_data, 30, 10, 3.0, test_data=test_data)
     net.SGD(training_data, 30, 10, 3.0)

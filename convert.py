@@ -16,16 +16,15 @@ len_training_data = len(training_data)
 print("Number of images: {}".format(len_training_data))
 for i in range(len_training_data):
     if i % 25 == 0:
-        percent_complete = round(float(i) / len_training_data) * 100
+        percent_complete = round(float(i) / len_training_data * 100)
         print("\rProgress: {}%".format(percent_complete), end='')
     item = training_data[i]
+    img = item[0]
     # Input
     things = []
-    for j in range(0,6143,3):
-        things[j] = item[j] + item[j+1] + item[j+2]
-
-    pixels = np.array([round(pixel / (255.0* 3), 3) for pixel in things[0]])
-
+    for j in range(0, 6144, 3):
+        things.append(img[j] + img[j+1] + img[j+2])
+    pixels = np.array([round(pixel / (255.0 * 3), 3) for pixel in things])
     # Output
     out = item[1]
     vm = np.zeros((14, 1))

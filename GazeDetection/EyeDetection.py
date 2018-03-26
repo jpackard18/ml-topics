@@ -36,11 +36,11 @@ def detect_eyes(img, draw_rects=False):
             eyes_rect.append(Eye(ex + x, ey + y, ew, eh))
             if draw_rects:
                 cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
-    return img, eyes_rect
+    return gray, eyes_rect
 
 
 def grab_eyes(img):
-    img, eyes_rect = detect_eyes(img)
+    gray, eyes_rect = detect_eyes(img)
     # cv2.imshow("eye", img)
     if len(eyes_rect) < 2:
         return []
@@ -51,7 +51,7 @@ def grab_eyes(img):
         w = eye_rect.width
         h = eye_rect.height
         # print("%d %d %d %d"%(x,y,w,h))
-        eyes.append(cv2.resize(img[y:y+h, x:x+w], (32, 32)))
+        eyes.append(cv2.resize(gray[y:y+h, x:x+w], (32, 32)))
     # cv2.imshow("Example", eyes[0])
     # cv2.imshow("Example 2", eyes[1])
     # cv2.waitKey(0)

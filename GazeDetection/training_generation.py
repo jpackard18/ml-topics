@@ -58,7 +58,7 @@ def create_training_data(gaze_set_path, output_file_path):
     processes = []
     queue = Queue(NUM_CPU_CORES)
     for core in range(NUM_CPU_CORES):
-        p = Process(target=process_image_list, args=(input_images[:100], queue, core))
+        p = Process(target=process_image_list, args=(input_images[:20], queue, core))
         p.start()
         processes.append(p)
     print("Done with appending processes")
